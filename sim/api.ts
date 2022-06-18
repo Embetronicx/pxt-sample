@@ -9,61 +9,46 @@ async function delay<T>(duration: number, value?: T | Promise<T>): Promise<T> {
     return output;
 }
 
-namespace pxsim.hare {
+
+namespace pxsim.test {
     /**
-     * This is hop
-     */
-    //% blockId="sampleHop" block="hop %hop on color %color=colorNumberPicker"
-    //% hop.fieldEditor="gridpicker"
-    export function hop(hop: Hop, color: number) {
-
-    }
-
-    //% blockId=sampleOnLand block="on land"
-    //% optionalVariableArgs
-    export function onLand(handler: (height: number, more: number, most: number) => void) {
-
-    }
-}
-
-namespace pxsim.turtle {
-    /**
-     * Moves the sprite forward
-     * @param steps number of steps to move, eg: 1
+     * Plot the LED Matrix
      */
     //% weight=90
-    //% blockId=sampleForward block="forward %steps"
-    export function forwardAsync(steps: number) {
-        return board().sprite.forwardAsync(steps)
+    //% blockId=plot block="plot|x %x|y %y"
+    //% x.min=0 x.max=4 y.min=0 y.max=4
+    export function plot( x : number, y : number ) {
+        const position = +("" + x + y);
+        return board().sprite.LedOn( position );
     }
 
     /**
-     * Moves the sprite forward
-     * @param direction the direction to turn, eg: Direction.Left
-     * @param angle degrees to turn, eg:90
+     * unPlot the LED Matrix
      */
-    //% weight=85
-    //% blockId=sampleTurn block="turn %direction|by %angle degrees"
-    //% angle.min=-180 angle.max=180
-    export function turnAsync(direction: Direction, angle: number) {
-        let b = board();
-
-        if (direction == Direction.Left)
-            b.sprite.angle -= angle;
-        else
-            b.sprite.angle += angle;
-        return delay(400)
+    //% weight=90
+    //% blockId=unplot block="unplot|x %x|y %y"
+    //% x.min=0 x.max=4 y.min=0 y.max=4
+    export function unplot(  x : number, y : number ) {
+        const position = +("" + x + y);
+        return board().sprite.LedOff( position );
     }
 
     /**
-     * Triggers when the turtle bumps a wall
-     * @param handler 
+     * Plot all the LEDs
      */
-    //% blockId=onBump block="on bump"
-    export function onBump(handler: RefAction) {
-        let b = board();
+    //% weight=90
+    //% blockId=plotAll block="plotAll"
+    export function plotAll( ) {
+        return board().sprite.AllLedOn( );
+    }
 
-        b.bus.listen("Turtle", "Bump", handler);
+    /**
+     * Unplot all the LEDs
+     */
+    //% weight=90
+    //% blockId=unplotAll block="unplotAll"
+    export function unplotAll( ) {
+        return board().sprite.AllLedOff( );
     }
 }
 
@@ -90,19 +75,6 @@ namespace pxsim.loops {
     }
 }
 
-function logMsg(m:string) { console.log(m) }
-
-namespace pxsim.console {
-    /**
-     * Print out message
-     */
-    //% 
-    export function log(msg:string) {
-        logMsg("CONSOLE: " + msg)
-        // why doesn't that work?
-        board().writeSerial(msg + "\n")
-    }
-}
 
 namespace pxsim {
     /**
@@ -110,17 +82,8 @@ namespace pxsim {
      */
     //%
     export class Sprite {
-        /**
-         * The X-coordiante
-         */
-        //%
-        public x = 100;
-         /**
-         * The Y-coordiante
-         */
-        //%
-        public y = 100;
-        public angle = 90;
+        public colour = 'black';
+        public position = 0;
         
         constructor() {
         }
@@ -128,19 +91,76 @@ namespace pxsim {
         private foobar() {}
 
         /**
-         * Move the thing forward
+         * Single Led On
          */
         //%
-        public forwardAsync(steps: number) {
-            let deg = this.angle / 180 * Math.PI;
-            this.x += Math.cos(deg) * steps * 10;
-            this.y += Math.sin(deg) * steps * 10;
+        public LedOn(value: number) {
+            
+            if( value >= 40 ) {
+                value -= 20;
+            } else if( value >= 30 ) {
+                value -= 15;
+            } else if( value >= 20 ) {
+                value -= 10;
+            } else if( value >= 10 ) {
+                value -= 5;
+            } else {
+                //do nothing
+            }
+
+            this.position = value;
+            this.colour = 'red';
+
             board().updateView();
+        }
 
-            if (this.x < 0 || this.y < 0)
-                board().bus.queue("TURTLE", "BUMP");
+        /**
+         * Single Led Off
+         */
+        //%
+        public LedOff(value: number) {
+            
+            if( value >= 40 ) {
+                value -= 20;
+            } else if( value >= 30 ) {
+                value -= 15;
+            } else if( value >= 20 ) {
+                value -= 10;
+            } else if( value >= 10 ) {
+                value -= 5;
+            } else {
+                //do nothing
+            }
 
-            return delay(400)
+            this.position = value;
+            this.colour = 'black';
+
+            board().updateView();
+        }
+
+        /**
+         * All LEDs On
+         */
+        //%
+        public AllLedOn() {
+            var i:number;
+
+            for(i = 0; i < 45; i++) {       //TODO: Change the 45
+                this.LedOn(i);
+             }
+        }
+
+        /**
+         * All LEDs Off
+         */
+        //%
+        public AllLedOff() {
+            var i:number;
+
+            for(i = 0; i < 45; i++) {       //TODO: Change the 45
+                this.LedOff(i);
+             }
+        }
         }
     }
 }

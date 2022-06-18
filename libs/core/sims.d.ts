@@ -1,47 +1,38 @@
 // Auto-generated from simulator. Do not edit.
-declare namespace hare {
+declare namespace test {
     /**
-     * This is hop
-     */
-    //% blockId="sampleHop" block="hop %hop on color %color=colorNumberPicker"
-    //% hop.fieldEditor="gridpicker"
-    //% shim=hare::hop
-    function hop(hop: Hop, color: number): void;
-
-    //% blockId=sampleOnLand block="on land"
-    //% optionalVariableArgs
-    //% shim=hare::onLand
-    function onLand(handler: (height: number, more: number, most: number) => void): void;
-
-}
-declare namespace turtle {
-    /**
-     * Moves the sprite forward
-     * @param steps number of steps to move, eg: 1
+     * Plot the LED Matrix
      */
     //% weight=90
-    //% blockId=sampleForward block="forward %steps"
-    //% shim=turtle::forwardAsync promise
-    function forward(steps: number): void;
+    //% blockId=plot block="plot|x %x|y %y"
+    //% x.min=0 x.max=4 y.min=0 y.max=4
+    //% shim=test::plot
+    function plot(x: number, y: number): void;
 
     /**
-     * Moves the sprite forward
-     * @param direction the direction to turn, eg: Direction.Left
-     * @param angle degrees to turn, eg:90
+     * unPlot the LED Matrix
      */
-    //% weight=85
-    //% blockId=sampleTurn block="turn %direction|by %angle degrees"
-    //% angle.min=-180 angle.max=180
-    //% shim=turtle::turnAsync promise
-    function turn(direction: Direction, angle: number): void;
+    //% weight=90
+    //% blockId=unplot block="unplot|x %x|y %y"
+    //% x.min=0 x.max=4 y.min=0 y.max=4
+    //% shim=test::unplot
+    function unplot(x: number, y: number): void;
 
     /**
-     * Triggers when the turtle bumps a wall
-     * @param handler 
+     * Plot all the LEDs
      */
-    //% blockId=onBump block="on bump"
-    //% shim=turtle::onBump
-    function onBump(handler: () => void): void;
+    //% weight=90
+    //% blockId=plotAll block="plotAll"
+    //% shim=test::plotAll
+    function plotAll(): void;
+
+    /**
+     * Unplot all the LEDs
+     */
+    //% weight=90
+    //% blockId=unplotAll block="unplotAll"
+    //% shim=test::unplotAll
+    function unplotAll(): void;
 
 }
 declare namespace loops {
@@ -64,40 +55,38 @@ declare namespace loops {
     function pause(ms: number): void;
 
 }
-declare namespace console {
-    /**
-     * Print out message
-     */
-    //%
-    //% shim=console::log
-    function log(msg: string): void;
-
-}
     /**
      * A ghost on the screen.
      */
     //%
     declare class Sprite {
         /**
-         * The X-coordiante
+         * Single Led On
          */
         //%
-        //% shim=.x
-        public x: number;
+        //% shim=.LedOn
+        public LedOn(value: number): void;
 
         /**
-         * The Y-coordiante
+         * Single Led Off
          */
         //%
-        //% shim=.y
-        public y: number;
+        //% shim=.LedOff
+        public LedOff(value: number): void;
 
         /**
-         * Move the thing forward
+         * All LEDs On
          */
         //%
-        //% shim=.forwardAsync promise
-        public forward(steps: number): void;
+        //% shim=.AllLedOn
+        public AllLedOn(): void;
+
+        /**
+         * All LEDs Off
+         */
+        //%
+        //% shim=.AllLedOff
+        public AllLedOff(): void;
 
     }
 declare namespace sprites {
